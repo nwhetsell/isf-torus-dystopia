@@ -126,7 +126,7 @@ float smin(float a, float b, float r) {
 }
 float smax(float a, float b, float r) {
     float h = smoo(a, b, r);
-    return mix(a, b ,h) + r * h * (1. - h);
+    return mix(a, b, h) + r * h * (1. - h);
 }
 
 vec2 displaceLoop(vec2 p, float r) {
