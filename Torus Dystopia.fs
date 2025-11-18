@@ -94,6 +94,14 @@
             "MIN": -180
         },
         {
+            "NAME": "boxHeight",
+            "LABEL": "Box height",
+            "TYPE": "float",
+            "DEFAULT": 0.1,
+            "MAX": 100,
+            "MIN": 0
+        },
+        {
             "NAME": "boxToroidalSeparation",
             "LABEL": "Box toroidal separation",
             "TYPE": "float",
@@ -272,8 +280,9 @@ float boxes(vec3 pos, float salt) {
     float salty = rng(vec2(floor(pos.y / ry), floor(pos.z / rz)));
     pos.y = repeat(pos.y, ry);
     pos.z = repeat(pos.z, rz);
-    float scene = sdBox(pos, vec3(0.1 + 0.8 * salt + salty, 0.1 + 0.2 * salt, 0.1 + 0.2 * salty));
-    scene = max(scene, sdBox(p, vec3(cell * boxProportion)));
+    float height = boxHeight + 0.8 * salt + salty;
+    float scene = sdBox(pos, vec3(height, 0.1 + 0.2 * salt, 0.1 + 0.2 * salty));
+    scene = max(scene, sdBox(p, vec3(height + cell * boxProportion, cell * boxProportion, cell * boxProportion)));
     return scene;
 }
 
