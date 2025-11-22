@@ -135,11 +135,6 @@
     "ISFVSN": "2"
 }*/
 
-#define color gl_FragColor
-#define coord gl_FragCoord
-#define iTime TIME
-#define iResolution RENDERSIZE
-
 // Constants and functions from LYGIA <https://github.com/patriciogonzalezvivo/lygia>
 #define PI 3.1415926535897932384626433832795
 #define TWO_PI 6.2831853071795864769252867665590
@@ -151,8 +146,6 @@
 
 #define STEPS 250.
 #define VOLUME 0.001
-#define TAU TWO_PI
-#define time iTime
 
 // raymarching toolbox
 float rng(vec2 seed) {
@@ -180,7 +173,7 @@ float sdTorus(vec3 p, vec2 t) {
 }
 
 float amod(inout vec2 p, float count) {
-    float an = TAU / count;
+    float an = TWO_PI / count;
     float a = atan(p.y, p.x) + an / 2.;
     float c = floor(a / an);
     c = mix(c, abs(c), step(count * 0.5, abs(c)));
@@ -190,7 +183,7 @@ float amod(inout vec2 p, float count) {
 }
 
 float amodIndex(vec2 p, float count) {
-    float an = TAU / count;
+    float an = TWO_PI / count;
     float a = atan(p.y, p.x) + an / 2.;
     float c = floor(a / an);
     c = mix(c, abs(c), step(count * 0.5, abs(c)));
@@ -302,7 +295,7 @@ float map(vec3 pos) {
     pDonut.xz = displaceLoop(pDonut.xz, donut);
     pDonut.z *= donut;
     pDonut.xzy = pDonut.xyz;
-    pDonut.xz *= rot(time * 0.05 * speed);
+    pDonut.xz *= rot(TIME * 0.05 * speed);
 
     // ground
     p = pDonut;
@@ -310,7 +303,7 @@ float map(vec3 pos) {
 
     // walls
     p = pDonut;
-    float py = p.y + time * speed;
+    float py = p.y + TIME * speed;
     indexY = floor(py / (cell + thin));
     p.y = repeat(py, cell + thin);
     scene = min(scene, max(abs(p.y) - thin, sdCylinder(p.xz, radius)));
@@ -321,7 +314,7 @@ float map(vec3 pos) {
     // horizontal window
     p = pDonut;
     p.xz *= rot(PI / segments);
-    py = p.y + time * speed;
+    py = p.y + TIME * speed;
     indexY = floor(py / (cell + thin));
     p.y = repeat(py, cell + thin);
     indexX = amodIndex(p.xz, segments);
@@ -336,7 +329,7 @@ float map(vec3 pos) {
 
     // vertical window
     p = pDonut;
-    py = p.y + cell / 2. + time * speed;
+    py = p.y + cell / 2. + TIME * speed;
     indexY = floor(py / (cell + thin));
     p.y = repeat(py, cell + thin);
     indexX = amodIndex(p.xz, segments);
@@ -352,7 +345,7 @@ float map(vec3 pos) {
     // elements
     p = pDonut;
     p.xz *= rot(PI / segments);
-    py = p.y + cell / 2. + time * speed;
+    py = p.y + cell / 2. + TIME * speed;
     indexY = floor(py / (cell + thin));
     p.y = repeat(py, cell + thin);
     indexX = amodIndex(p.xz, segments);
@@ -367,12 +360,12 @@ float map(vec3 pos) {
 
 void main()
 {
-    vec2 uv = (coord.xy - 0.5 * iResolution.xy) / iResolution.y;
+    vec2 uv = (gl_FragCoord.xy - 0.5 * RENDERSIZE.xy) / RENDERSIZE.y;
     vec3 eye = vec3(cameraX, cameraY, cameraZ);
     vec3 ray = normalize(vec3(uv, 1.3));
     camera(eye);
     camera(ray);
-    float dither = rng(uv + fract(time));
+    float dither = rng(uv + fract(TIME));
     vec3 pos = eye;
     float shade = 0.;
     bool isTorus = false;
@@ -390,9 +383,9 @@ void main()
     if (isTorus) {
         vec3 light = vec3(40, 100, -10);
         float shadow = getShadow(pos, light, 4.);
-        color.rgb = vec3(sqrt(smoothstep(0., 0.5, shade * shadow)));
-        color.a = 1.;
+        gl_FragColor.rgb = vec3(sqrt(smoothstep(0., 0.5, shade * shadow)));
+        gl_FragColor.a = 1.;
     } else {
-        color = backgroundColor;
+        gl_FragColor = backgroundColor;
     }
 }
