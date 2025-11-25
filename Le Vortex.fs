@@ -205,7 +205,7 @@ float smax(float a, float b, float r) {
 }
 
 vec2 displaceLoop(vec2 p, float r) {
-    return vec2(length(p.xy) - r, atan(p.y, p.x));
+    return vec2(length(p) - r, atan(p.y, p.x));
 }
 
 float map(vec3);
