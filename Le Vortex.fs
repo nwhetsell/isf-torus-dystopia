@@ -78,7 +78,7 @@
             "MIN": -100
         },
         {
-            "NAME": "yAxisYotation",
+            "NAME": "yAxisRotation",
             "LABEL": "y-axis rotation",
             "TYPE": "float",
             "DEFAULT": 22.5,
@@ -86,7 +86,7 @@
             "MIN": -180
         },
         {
-            "NAME": "xAxisYotation",
+            "NAME": "xAxisRotation",
             "LABEL": "x-axis rotation",
             "TYPE": "float",
             "DEFAULT": 30,
@@ -239,8 +239,8 @@ vec3 getNormal(vec3 p) {
 }
 
 void camera(inout vec3 p) {
-    p.xz *= rotate2dCounterclockwise(yAxisYotation * DEG2RAD);
-    p.yz *= rotate2dCounterclockwise(xAxisYotation * DEG2RAD);
+    p.xz *= rotate2dCounterclockwise(yAxisRotation * DEG2RAD);
+    p.yz *= rotate2dCounterclockwise(xAxisRotation * DEG2RAD);
 }
 
 float windowCross(vec3 pos, vec4 size, float salt) {
